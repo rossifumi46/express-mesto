@@ -7,7 +7,7 @@ const dataPath = path.join(path.resolve(__dirname, '..'), 'data', 'cards.json');
 cardsRouter.get('/cards', (req, res) => {
   fs.readFile(dataPath, { encoding: 'utf8' }, (err, data) => {
     if (err) {
-      console.log(err);
+      res.status(500).send({ message: 'файл не найден' });
       return;
     }
     const cards = JSON.parse(data);
