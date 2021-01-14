@@ -1,37 +1,16 @@
 const usersRouter = require('express').Router();
-const path = require('path');
-const fs = require('fs');
+const {
+  getUsers, getUser, createUser, updateProfile, updateAvatar,
+} = require('../controllers/users');
 
-const dataPath = path.join(path.resolve(__dirname, '..'), 'data', 'users.json');
+usersRouter.get('/', getUsers);
 
-usersRouter.get('/users', (req, res) => {
-  fs.readFile(dataPath, { encoding: 'utf8' }, (err, data) => {
-    if (err) {
-      res.status(500).send({ message: 'файл не найден' });
-      return;
-    }
-    const users = JSON.parse(data);
-    res.send(users);
-  });
-});
+usersRouter.get('/:_id', getUser);
 
-usersRouter.get('/users/:_id', (req, res) => {
-  const { _id } = req.params;
+usersRouter.post('/', createUser);
 
-  fs.readFile(dataPath, { encoding: 'utf8' }, (err, data) => {
-    if (err) {
-      res.status(500).send({ message: 'файл не найден' });
-      return;
-    }
+usersRouter.patch('/me', updateProfile);
 
-    const users = JSON.parse(data);
-    const user = users.find((x) => x._id === _id);
-    if (!user) {
-      res.status(404).send({ message: 'Нет пользователя с таким id' });
-      return;
-    }
-    res.send(user);
-  });
-});
+usersRouter.patch('/me/avatar', updateAvatar);
 
 module.exports = usersRouter;
